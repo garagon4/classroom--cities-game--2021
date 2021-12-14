@@ -9,9 +9,22 @@ export function EntityListItem({ entity }: any) {
     [dispatch, entity]
   );
 
+  const { type, name, owner } = entity;
+  let potatoIcon = "";
+  if (type === "ship" && entity.resources["potato"].maximum > 0) {
+    potatoIcon = "\ud83e\udd54";
+  } else {
+    potatoIcon = "";
+  }
   return (
-    <li onClick={go}>
-      {entity.type}: {entity.name} of {entity.owner}
+    <li
+      onClick={go}
+      data-testid="entity-list-item"
+      style={{ textDecoration: "underline", cursor: "pointer" }}
+    >
+      {type}: {name}
+      {owner && ` of ${owner}`}
+      {potatoIcon}
     </li>
   );
 }

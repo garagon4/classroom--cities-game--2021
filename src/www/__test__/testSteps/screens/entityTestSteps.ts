@@ -1,29 +1,39 @@
 import { PostLineStep, step } from "../../testPost";
-import { screen } from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
+import { screen } from "@testing-library/react";
 
 export const entityTestSteps: PostLineStep[] = [
-  step(/You should be at the screen of a ([a-z]+)/, (line, [, type]) => {
-    expect(
-      screen.getByRole("heading", { name: new RegExp(type, "i") })
-    ).toBeInTheDocument();
+  step(/You should be at the screen of a "([^"]+)"/, (line, [, type]) => {
+    var title = screen.getByTestId("screen-entity-title");
+    expect(title).toHaveTextContent(type);
   }),
-  step(/The name should be "([^"]+)"/, (line, [, name]) => {
-    expect(
-      screen.getByRole("heading", { name: new RegExp(name, "i") })
-    ).toBeInTheDocument();
+  step(/The _name_ content should be "([^"]+)"/, (line, [, name]) => {
+    var title = screen.getByTestId("screen-entity-title");
+    expect(title).toHaveTextContent(name);
   }),
-  step(/The owner should be "([^"]+)"/, (line, [, owner]) => {
-    expect(
-      screen.getByRole("heading", { name: new RegExp(owner, "i") })
-    ).toBeInTheDocument();
+  step(/The _owner_ content should be "([^"]+)"/, (line, [, owner]) => {
+    var title = screen.getByTestId("screen-entity-title");
+    expect(title).toHaveTextContent(owner);
+  }),
+  step(/The _type_ content should be "([^"]+)"/, (line, [, type]) => {
+    var title = screen.getByTestId("screen-entity-title");
+    expect(title).toHaveTextContent(type);
   }),
   step(/Go back to the previous screen/, (line, [, name]) => {
-    const button = screen.getByRole("link", { name: "« Back" });
-    userEvent.click(button);
+    screen.getByRole("link", { name: "« Back" }).click();
   }),
-  step(/There should not be a back button/, (line, [, name]) => {
-    const button = screen.queryByRole("link", { name: "« Back" });
-    expect(button).toBeNull();
-  }),
+  step(
+    /The "([^"]+)" icon is (not )?in the "([^"]+)" "([^"]+)" "([^"]+)"/,
+    (line, [, type, present, player, entity, name]) => {
+      const allItems = getAllEntitiesListItems();
+      const title = `${entity}: ${name} of ${player}${
+        present ? "" : "\ud83e\udd54"
+      }`;
+      const object = allItems.find((item) => item.textContent?.includes(title));
+      expect(object?.textContent).toBe(title);
+    }
+  ),
 ];
+
+function getAllEntitiesListItems(): HTMLElement[] {
+  return screen.queryAllByRole("listitem");
+}
