@@ -21,4 +21,19 @@ export const entityTestSteps: PostLineStep[] = [
   step(/Go back to the previous screen/, (line, [, name]) => {
     screen.getByRole("link", { name: "« Back" }).click();
   }),
+  step(
+    /The "([^"]+)" icon is (not )?in the "([^"]+)" "([^"]+)" "([^"]+)"/,
+    (line, [, type, present, player, entity, name]) => {
+      const allItems = getAllEntitiesListItems();
+      const title = `${entity}: ${name} of ${player}${
+        present ? "" : "\ud83e\udd54"
+      }`;
+      const object = allItems.find((item) => item.textContent?.includes(title));
+      expect(object?.textContent).toBe(title);
+    }
+  ),
 ];
+
+function getAllEntitiesListItems(): HTMLElement[] {
+  return screen.queryAllByRole("listitem");
+}
