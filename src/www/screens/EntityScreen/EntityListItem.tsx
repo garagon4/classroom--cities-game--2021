@@ -11,7 +11,7 @@ export function EntityListItem({ entity }: any) {
 
   const { type, name, owner } = entity;
   let potatoIcon = "";
-  if (type =="ship" && entity.resources["potato"].maximum > 0) {
+  if (type === "ship" && entity.resources["potato"].maximum > 0) {
     potatoIcon = "\ud83e\udd54";
   } else {
     potatoIcon = "";
